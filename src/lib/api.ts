@@ -1,17 +1,17 @@
 import axios from 'axios';
-import { Story } from '../types/story';
+import { SearchResponse } from '../types/story';
 
-const BASE_URL = 'https://hacker-news.firebaseio.com/v0';
+const BASE_URL = 'https://hn.algolia.com/api/v1';
 
-export async function fetchTopStories(page: number, limit: number): Promise<number[]> {
-  const response = await axios.get<number[]>(`${BASE_URL}/topstories.json`);
-  const stories = response.data;
-  const start = page * limit;
-  return stories.slice(start, start + limit);
-}
-
-export async function fetchStory(id: number): Promise<Story> {
-  const response = await axios.get<Story>(`${BASE_URL}/item/${id}.json`);
+export async function fetchStories(page: number, itemsPerPage: number = 20, query: string = '') {
+  const response = await axios.get<SearchResponse>(`${BASE_URL}/search`, {
+    params: {
+      query,
+      page,
+      tags: 'story',
+      hitsPerPage: itemsPerPage
+    }
+  });
   return response.data;
 }
 

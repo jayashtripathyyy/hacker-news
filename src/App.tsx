@@ -1,42 +1,33 @@
-import { useInfiniteQuery } from "@tanstack/react-query";
 import Header from "./components/header"
 import { cn } from "./lib/utils"
-import { fetchStory, fetchTopStories } from "./lib/api";
-import { useStore } from "./store/global";
-import { Story } from './types/story';
+import { useStore } from "./store/global"
+import StoriesList from "./components/story/stories-list"
+import { Story } from "./types/story"
 
 interface Props extends React.HTMLAttributes<HTMLDivElement> {}
 
-function App({className, ...props}: Props) {
-  const { itemsPerPage } = useStore();
-  const {
-    data: stories,
-    fetchNextPage,
-    hasNextPage,
-    isLoading,
-  } = useInfiniteQuery<Story[]>({
-    queryKey: ['stories'],
-    initialPageParam: 0,
-    queryFn: async ({ pageParam = 0 }) => {
-      const ids = await fetchTopStories(itemsPerPage, itemsPerPage);
-      const stories = await Promise.all(ids.map(fetchStory)); 
-      return stories;
-    },
-    getNextPageParam: (lastPage, allPages) => {
-      return lastPage.length === itemsPerPage ? allPages.length : undefined;
-    },
-  });
+function App({ className, ...props }: Props) {
+  const { searchQuery } = useStore();
 
-  console.log(stories);
+  const handleStoryClick = (story: Story) => {
+    if (story.url) {
+      window.open(story.url, '_blank');
+    }
+  };
+
   return (
-    <div className={cn(' dark flex justify-center items-center h-screen w-screen bg-background text-primary', className)} {...props}>
-   
-        <div className="container_wrapper ">
-          <Header />
-        </div>
-   
-    </div>
-  )
+    <main className={cn('min-h-screen bg-background text-foreground dark', className)} {...props}>
+      <div className="container_wrapper">
+        <Header />
+    
+          <StoriesList 
+            searchQuery={searchQuery} 
+            onStoryClick={handleStoryClick} 
+          />
+      
+      </div>
+    </main>
+  );
 }
 
-export default App
+export default App;

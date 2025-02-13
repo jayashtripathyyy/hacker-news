@@ -1,18 +1,22 @@
 export interface Story {
-    id: number;
-    title: string;
-    url?: string;
-    text?: string;
-    by: string;
-    time: number;
-    score: number;
-    descendants: number; // number of comments
-    kids?: number[]; // comment IDs
-    type: 'story' | 'job' | 'comment' | 'poll' | 'pollopt';
-    localVote?: 'up' | 'down' | null;
+  objectID: string;
+  title: string;
+  author: string;
+  url?: string;
+
+  created_at: string;
+  story_text?: string;
+}
+
+export interface SearchResponse {
+  hits: Story[];
+  page: number;
+  nbHits: number;
+  nbPages: number;
+  hitsPerPage: number;
 }
 
 export interface SearchHistory {
-    query: string;
-    timestamp: number;
+  query: string;
+  timestamp: number;
 }
