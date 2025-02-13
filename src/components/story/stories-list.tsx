@@ -1,4 +1,5 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
+import { useCallback } from "react";
 
 import StoryItem from "./story-item";
 import { useStore } from "../../store/global";
@@ -27,14 +28,33 @@ export default function StoriesList({ searchQuery, onStoryClick }: StoriesListPr
       lastPage.page < lastPage.nbPages - 1 ? lastPage.page + 1 : undefined,
   });
 
+  const lastStoryRef = useCallback(
+    (node: HTMLElement | null) => {
+      if (!node) return;
+      
+      const observer = new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting && hasNextPage) {
+          fetchNextPage();
+        }
+      });
+
+      observer.observe(node);
+      return () => observer.disconnect();
+    },
+    [fetchNextPage, hasNextPage]
+  );
+
   if (isLoading) return <div>Loading...</div>;
 
   return (
-    <div className="space-y-4 py-4">
-      {data?.pages.map((page) => (
-        page.hits.map((story) => (
+    <div className="space-y-4 py-4 flex flex-col flex-1 overflow-auto">
+      {data?.pages.map((page, pageIndex) => (
+        page.hits.map((story, storyIndex) => (
           <StoryItem 
             key={story.objectID}
+            ref={pageIndex === data.pages.length - 1 && 
+                 storyIndex === page.hits.length - 1 ? 
+                 lastStoryRef : undefined}
             story={story}
             onClick={() => onStoryClick(story)}
           />

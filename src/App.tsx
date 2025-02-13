@@ -16,8 +16,8 @@ function App({ className, ...props }: Props) {
   };
 
   return (
-    <main className={cn('min-h-screen bg-background text-foreground dark', className)} {...props}>
-      <div className="container_wrapper">
+    <main className={cn('h-screen bg-background text-foreground dark overflow-hidden', className)} {...props}>
+      <div className="container_wrapper flex flex-1 overflow-hidden">
         <Header />
     
           <StoriesList 
