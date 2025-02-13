@@ -1,9 +1,17 @@
+import Header from "./components/header"
+import { cn } from "./lib/utils"
 
-type Props = {}
+interface Props extends React.HTMLAttributes<HTMLDivElement> {}
 
-function App({}: Props) {
+function App({className, ...props}: Props) {
   return (
-    <div className='dark flex justify-center items-center h-screen w-screen bg-background text-primary'>App</div>
+    <div className={cn(' dark flex justify-center items-center h-screen w-screen bg-background text-primary', className)} {...props}>
+   
+        <div className="container_wrapper ">
+          <Header />
+        </div>
+   
+    </div>
   )
 }
 
