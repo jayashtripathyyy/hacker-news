@@ -20,3 +20,14 @@ export interface SearchHistory {
   query: string;
   timestamp: number;
 }
+
+export const VoteType = {
+  UPVOTE: 'upvote',
+  DOWNVOTE: 'downvote',
+} as const;
+
+export type VoteType = typeof VoteType[keyof typeof VoteType];
+
+export interface StoriesVoteList {
+  [objectId: Story['objectID']]: VoteType;
+}

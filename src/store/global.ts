@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
+import { StoriesVoteList } from '../types/story';
 
 interface GlobalStore {
   //states
@@ -7,25 +8,26 @@ interface GlobalStore {
   searchQuery: string;
   searchHistory: Set<string>;
   totalResults: number;
+  storiesVoteList: StoriesVoteList;
   //actions
   setItemsPerPage: (count: number) => void;
   setSearchQuery: (query: string) => void;
   addToSearchHistory: (query: string) => void;
   setTotalResults: (count: number) => void;
+  setStoriesVoteList: (voteList: StoriesVoteList) => void;
 }
 
 
-const createPersistedSearchHistory = persist<Pick<GlobalStore, 'searchHistory'> & { addToSearchHistory: (query: string) => void }>(
+const createPersistedStore = persist<Pick<GlobalStore, 'searchHistory' | 'storiesVoteList'> & { 
+  setStoriesVoteList: (voteList: StoriesVoteList) => void 
+}>(
   (set) => ({
     searchHistory: new Set() as Set<string>,
-    addToSearchHistory: (query: string) => set((state) => {
-      const newHistory = new Set(state.searchHistory);
-      newHistory.add(query);
-      return { searchHistory: newHistory };
-    }),
+    storiesVoteList: {} as StoriesVoteList,
+    setStoriesVoteList: (voteList) => set({ storiesVoteList: voteList }),
   }),
   {
-    name: 'search-history',
+    name: 'persistent-store',
     storage: {
       getItem: (name) => {
         const str = localStorage.getItem(name);
@@ -34,7 +36,8 @@ const createPersistedSearchHistory = persist<Pick<GlobalStore, 'searchHistory'> 
         return {
           state: {
             ...state,
-            searchHistory: new Set(state.searchHistory)
+            searchHistory: new Set(state.searchHistory),
+            storiesVoteList: state.storiesVoteList || {}
           }
         };
       },
@@ -43,7 +46,8 @@ const createPersistedSearchHistory = persist<Pick<GlobalStore, 'searchHistory'> 
           ...value,
           state: {
             ...value.state,
-            searchHistory: Array.from(value.state.searchHistory)
+            searchHistory: Array.from(value.state.searchHistory),
+            storiesVoteList: value.state.storiesVoteList
           }
         };
         localStorage.setItem(name, JSON.stringify(serializedValue));
@@ -60,5 +64,8 @@ export const useStore = create<GlobalStore>()((...args) => ({
   setItemsPerPage: (count) => args[0]({ itemsPerPage: count, totalResults: 0 }),
   setSearchQuery: (query) => args[0]({ searchQuery: query }),
   setTotalResults: (count) => args[0]({ totalResults: count }),
-  ...createPersistedSearchHistory(...args),
+  addToSearchHistory: (query: string) => args[0]((state) => ({
+    searchHistory: new Set([...state.searchHistory, query])
+  })),
+  ...createPersistedStore(...args),
 }));
