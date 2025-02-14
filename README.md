@@ -4,7 +4,7 @@
 - Implemented a search bar component with real-time search capabilities
 - Debounced search functionality to optimize performance
 - Search controller to manage search operations (pagesize, total results)
-- Aearch history stored in a store , display maximum 10 items at a time
+- Search history stored in a store , display maximum 10 items at a time
 
 ###  Story Management
 - Story listing with paginated infinite scoll 
