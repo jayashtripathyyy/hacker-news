@@ -17,15 +17,15 @@ function App({ className, ...props }: Props) {
   };
 
   return (
-    <main className={cn('h-screen bg-background text-foreground dark overflow-hidden ', className)} {...props}>
-      <div className="container_wrapper flex flex-1 overflow-hidden">
+    <main className={cn('h-screen bg-background text-foreground dark overflow-hidden flex flex-col', className)} {...props}>
         <Header />
         <SearchBar/>
+      <div className="container_wrapper flex flex-1 overflow-hidden ">
         <StoriesList
           onStoryClick={handleStoryClick}
         />
-
       </div>
+
     </main>
   );
 }

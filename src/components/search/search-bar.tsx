@@ -14,10 +14,11 @@ function SearchBar({ }: Props) {
   }, [debouncedValue]);
 
   return (
-    <div className='p-4 border-b border-dashed border-border'>
-      <div className='rounded-3xl border border-input bg-muted px-4 py-2 flex items-center gap-2'>
-        <input type='text' placeholder='Search' className='w-full bg-transparent outline-none' value={inputValue} onChange={(e) => setInputValue(e.target.value)} />
-
+    <div className='border-b border-dashed border-border '>
+      <div className='container_wrapper p-4'>
+        <div className='container_wrapper rounded-3xl border border-input bg-muted px-4 py-2 flex items-center gap-2'>
+          <input type='text' placeholder='Search' className='w-full bg-transparent outline-none' value={inputValue} onChange={(e) => setInputValue(e.target.value)} />
+        </div>
       </div>
     </div>
   )
