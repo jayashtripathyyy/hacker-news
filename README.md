@@ -21,6 +21,20 @@
 - Responsive layout design using tailwindcss
 - Data fetching using tanstackquery and axios
 
+### Dev Start
+
+1. Install dependencies:
+```bash
+pnpm install
+```
+
+2. Start the development server:
+```bash
+pnpm dev
+```
+
+The application will be available at `https://vercel.com/jayashs-projects-e008b9a7/hacker-news/settings/domains`
+
 
 
 
