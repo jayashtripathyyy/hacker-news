@@ -19,12 +19,16 @@ interface GlobalStore {
 
 
 const createPersistedStore = persist<Pick<GlobalStore, 'searchHistory' | 'storiesVoteList'> & { 
-  setStoriesVoteList: (voteList: StoriesVoteList) => void 
+  setStoriesVoteList: (voteList: StoriesVoteList) => void,
+  addToSearchHistory: (query: string) => void
 }>(
   (set) => ({
     searchHistory: new Set() as Set<string>,
     storiesVoteList: {} as StoriesVoteList,
     setStoriesVoteList: (voteList) => set({ storiesVoteList: voteList }),
+    addToSearchHistory: (query) => set((state) => ({
+      searchHistory: new Set([...state.searchHistory, query])
+    })),
   }),
   {
     name: 'persistent-store',
@@ -64,8 +68,5 @@ export const useStore = create<GlobalStore>()((...args) => ({
   setItemsPerPage: (count) => args[0]({ itemsPerPage: count, totalResults: 0 }),
   setSearchQuery: (query) => args[0]({ searchQuery: query }),
   setTotalResults: (count) => args[0]({ totalResults: count }),
-  addToSearchHistory: (query: string) => args[0]((state) => ({
-    searchHistory: new Set([...state.searchHistory, query])
-  })),
   ...createPersistedStore(...args),
 }));

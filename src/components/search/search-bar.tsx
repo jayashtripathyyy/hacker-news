@@ -12,8 +12,6 @@ function SearchBar({ }: Props) {
   const [isRecentSearchOpen, setIsRecentSearchOpen] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(-1);
 
-
-
   const previousSearchHistoryList = useMemo(() => {
     if (!isRecentSearchOpen || searchHistory.size === 0) return [];
     const foundSearchHits = Array.from(searchHistory).filter((query) => query.includes(inputValue));
