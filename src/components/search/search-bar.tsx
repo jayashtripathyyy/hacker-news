@@ -9,14 +9,14 @@ function SearchBar({ }: Props) {
   const { searchQuery, setSearchQuery, searchHistory } = useStore();
   const [inputValue, setInputValue] = useState(searchQuery);
   const [debouncedValue, clearDebounce] = useDebounce(inputValue, 800);
-  const [searchInputFocused, setSearchInputFocused] = useState(false);
+  const [isRecentSearchOpen, setIsRecentSearchOpen] = useState(false);
 
 
   const previousSearchHistoryList = useMemo(() => {
-    if (!searchInputFocused || searchHistory.size === 0) return [];
+    if (!isRecentSearchOpen || searchHistory.size === 0) return [];
     const foundSearchHits = Array.from(searchHistory).filter((query) => query.includes(inputValue));
     return foundSearchHits.slice(0, 10);
-  }, [searchInputFocused, searchHistory, inputValue])
+  }, [isRecentSearchOpen, searchHistory, inputValue])
 
 
   // if user pressed enter while typing
@@ -24,6 +24,7 @@ function SearchBar({ }: Props) {
     if (e.key === 'Enter') {
       clearDebounce();
       setSearchQuery(inputValue);
+      setIsRecentSearchOpen(false);
     }
   }
 
@@ -43,13 +44,13 @@ function SearchBar({ }: Props) {
             className='w-full bg-transparent outline-none  '
             value={inputValue} onChange={(e) => {
               setInputValue(e.target.value)
-              setSearchInputFocused(true)
+              setIsRecentSearchOpen(true)
             }}
             onKeyDown={handleKeyPress}
-            onFocus={() => setSearchInputFocused(true)}
-            onBlur={() => setSearchInputFocused(false)}
+            onFocus={() => setIsRecentSearchOpen(true)}
+            onBlur={() => setIsRecentSearchOpen(false)}
           />
-          {searchInputFocused && previousSearchHistoryList.length > 0 && (
+          {isRecentSearchOpen && previousSearchHistoryList.length > 0 && (
             <div className='absolute top-12 left-0 w-full bg-secondary/60 backdrop-blur-md rounded-xl shadow-md overflow-hidden '>
               {previousSearchHistoryList.map((query) => (
                 <div key={query} className='p-2 hover:bg-muted-foreground/10 cursor-pointer border-b border-dashed border-border flex items-center gap-2'
@@ -57,7 +58,7 @@ function SearchBar({ }: Props) {
                   e.preventDefault();
                   setInputValue(query);
                   setSearchQuery(query);
-                  setSearchInputFocused(false);
+                  setIsRecentSearchOpen(false);
                 }}
                 >
                   <History className='w-4 h-4' />
