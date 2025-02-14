@@ -18,7 +18,7 @@ export default function StoriesList({ onStoryClick }: StoriesListProps) {
     hasNextPage,
     isLoading,
   } = useInfiniteQuery({
-    queryKey: ['stories', searchQuery],
+    queryKey: ['stories', searchQuery, itemsPerPage],
     initialPageParam: 0,
     queryFn: async ({ pageParam = 0 }) => {
       return fetchStories(pageParam, itemsPerPage, searchQuery);
