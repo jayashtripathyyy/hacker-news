@@ -3,9 +3,9 @@ export interface Story {
   title: string;
   author: string;
   url?: string;
-
   created_at: string;
   story_text?: string;
+  points: number
 }
 
 export interface SearchResponse {

@@ -47,7 +47,7 @@ export default function StoriesList({ searchQuery, onStoryClick }: StoriesListPr
   if (isLoading) return <div>Loading...</div>;
 
   return (
-    <div className="space-y-4 py-4 flex flex-col flex-1 overflow-auto">
+    <div className="flex flex-col flex-1 overflow-auto ">
       {data?.pages.map((page, pageIndex) => (
         page.hits.map((story, storyIndex) => (
           <StoryItem 
