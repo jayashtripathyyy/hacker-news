@@ -47,7 +47,7 @@ export default function StoriesList({ onStoryClick }: StoriesListProps) {
   return (
     <div className="flex flex-col flex-1 overflow-auto ">
       {isLoading && Array.from({ length: itemsPerPage }).map((_, index) => (
-        <div className="animate-pulse  bg-primary/5 p-10 md:px-4  hover:bg-muted/40 cursor-pointer transition-colors border-b border-border "></div>
+        <div className="animate-pulse  bg-muted/10 p-10 md:px-4  hover:bg-muted/40 cursor-pointer transition-colors border-b border-border "></div>
       ))}
       {data?.pages.map((page, pageIndex) => (
         page.hits.map((story, storyIndex) => (
