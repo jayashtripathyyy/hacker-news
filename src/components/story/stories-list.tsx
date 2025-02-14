@@ -7,12 +7,11 @@ import { fetchStories } from "../../lib/api";
 import { Story } from "../../types/story";
 
 interface StoriesListProps {
-  searchQuery: string;
   onStoryClick: (story: Story) => void;
 }
 
-export default function StoriesList({ searchQuery, onStoryClick }: StoriesListProps) {
-  const { itemsPerPage } = useStore();
+export default function StoriesList({ onStoryClick }: StoriesListProps) {
+  const { itemsPerPage, searchQuery } = useStore();
   const {
     data,
     fetchNextPage,
@@ -24,14 +23,14 @@ export default function StoriesList({ searchQuery, onStoryClick }: StoriesListPr
     queryFn: async ({ pageParam = 0 }) => {
       return fetchStories(pageParam, itemsPerPage, searchQuery);
     },
-    getNextPageParam: (lastPage) => 
+    getNextPageParam: (lastPage) =>
       lastPage.page < lastPage.nbPages - 1 ? lastPage.page + 1 : undefined,
   });
 
   const lastStoryRef = useCallback(
     (node: HTMLElement | null) => {
       if (!node) return;
-      
+
       const observer = new IntersectionObserver((entries) => {
         if (entries[0].isIntersecting && hasNextPage) {
           fetchNextPage();
@@ -44,22 +43,27 @@ export default function StoriesList({ searchQuery, onStoryClick }: StoriesListPr
     [fetchNextPage, hasNextPage]
   );
 
-  if (isLoading) return <div>Loading...</div>;
 
   return (
     <div className="flex flex-col flex-1 overflow-auto ">
+      {isLoading && Array.from({ length: itemsPerPage }).map((_, index) => (
+        <div className="animate-pulse  bg-primary/5 p-10 md:px-4  hover:bg-muted/40 cursor-pointer transition-colors border-b border-border "></div>
+      ))}
       {data?.pages.map((page, pageIndex) => (
         page.hits.map((story, storyIndex) => (
-          <StoryItem 
+          <StoryItem
             key={story.objectID}
-            ref={pageIndex === data.pages.length - 1 && 
-                 storyIndex === page.hits.length - 1 ? 
-                 lastStoryRef : undefined}
+            ref={pageIndex === data.pages.length - 1 &&
+              storyIndex === page.hits.length - 1 ?
+              lastStoryRef : undefined}
             story={story}
             onClick={() => onStoryClick(story)}
           />
         ))
       ))}
+
+      {hasNextPage && <div className="p-4 text-center text-muted-foreground">Loading more stories...</div>}
+      {!hasNextPage && <div className="p-4 text-center text-muted-foreground">You reached the end of the list</div>}
     </div>
   );
 }
