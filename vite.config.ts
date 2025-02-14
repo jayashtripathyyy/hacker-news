@@ -12,5 +12,18 @@ export default defineConfig({
   },
   define: {
     _global: ({})
+  },
+  build: {
+    commonjsOptions: {
+      include: [/node_modules/],
+      transformMixedEsModules: true
+    },
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          vendor: ['axios']
+        }
+      }
+    }
   }
 })
