@@ -9,8 +9,6 @@ import SearchController from "./components/search/serch-controller"
 interface Props extends React.HTMLAttributes<HTMLDivElement> { }
 
 function App({ className, ...props }: Props) {
-  const { searchQuery } = useStore();
-
   const handleStoryClick = (story: Story) => {
     if (story.url) {
       window.open(story.url, '_blank');

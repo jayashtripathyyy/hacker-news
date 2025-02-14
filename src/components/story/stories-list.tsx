@@ -1,5 +1,5 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
-import { useCallback } from "react";
+import { useCallback, useEffect } from "react";
 
 import StoryItem from "./story-item";
 import { useStore } from "../../store/global";
@@ -11,7 +11,7 @@ interface StoriesListProps {
 }
 
 export default function StoriesList({ onStoryClick }: StoriesListProps) {
-  const { itemsPerPage, searchQuery } = useStore();
+  const { itemsPerPage, searchQuery,searchHistory, addToSearchHistory } = useStore();
   const {
     data,
     fetchNextPage,
@@ -43,7 +43,13 @@ export default function StoriesList({ onStoryClick }: StoriesListProps) {
     [fetchNextPage, hasNextPage]
   );
 
-
+  useEffect(() => {
+    //we can uncomment this if we want to add the search query only in a successful search
+    // if (data && data?.pages[0].hits.length > 0 && searchQuery) {
+      addToSearchHistory(searchQuery);
+    // }
+  },[data])      
+  console.log(searchHistory);
   return (
     <div className="flex flex-col flex-1 overflow-auto ">
       {isLoading && Array.from({ length: itemsPerPage }).map((_, index) => (
