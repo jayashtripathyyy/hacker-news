@@ -10,6 +10,8 @@ function SearchBar({ }: Props) {
   const [inputValue, setInputValue] = useState(searchQuery);
   const [debouncedValue, clearDebounce] = useDebounce(inputValue, 800);
   const [isRecentSearchOpen, setIsRecentSearchOpen] = useState(false);
+  const [selectedIndex, setSelectedIndex] = useState(-1);
+
 
 
   const previousSearchHistoryList = useMemo(() => {
@@ -19,14 +21,28 @@ function SearchBar({ }: Props) {
   }, [isRecentSearchOpen, searchHistory, inputValue])
 
 
-  // if user pressed enter while typing
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
-      clearDebounce();
-      setSearchQuery(inputValue);
+      if (selectedIndex >= 0 && previousSearchHistoryList[selectedIndex]) {
+        setInputValue(previousSearchHistoryList[selectedIndex]);
+        setSearchQuery(previousSearchHistoryList[selectedIndex]);
+      } else {
+        clearDebounce();
+        setSearchQuery(inputValue);
+      }
       setIsRecentSearchOpen(false);
+      setSelectedIndex(-1);
+    } else if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      setSelectedIndex(prev =>
+        prev < previousSearchHistoryList.length - 1 ? prev + 1 : prev
+      );
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      setSelectedIndex(prev => prev > -1 ? prev - 1 : prev);
     }
   }
+
 
   useEffect(() => {
     setSearchQuery(debouncedValue);
@@ -52,14 +68,16 @@ function SearchBar({ }: Props) {
           />
           {isRecentSearchOpen && previousSearchHistoryList.length > 0 && (
             <div className='absolute top-12 left-0 w-full bg-secondary/60 backdrop-blur-md rounded-xl shadow-md overflow-hidden '>
-              {previousSearchHistoryList.map((query) => (
-                <div key={query} className='p-2 hover:bg-muted-foreground/10 cursor-pointer border-b border-dashed border-border flex items-center gap-2'
-                onMouseDown={(e) => {
-                  e.preventDefault();
-                  setInputValue(query);
-                  setSearchQuery(query);
-                  setIsRecentSearchOpen(false);
-                }}
+              {previousSearchHistoryList.map((query, index) => (
+                <div key={query}
+                  className={`p-2 hover:bg-muted-foreground/10 cursor-pointer border-b border-dashed border-border flex items-center gap-2 ${index === selectedIndex ? 'bg-muted-foreground/10' : ''
+                    }`}
+                  onMouseDown={(e) => {
+                    e.preventDefault();
+                    setInputValue(query);
+                    setSearchQuery(query);
+                    setIsRecentSearchOpen(false);
+                  }}
                 >
                   <History className='w-4 h-4' />
                   {query}
