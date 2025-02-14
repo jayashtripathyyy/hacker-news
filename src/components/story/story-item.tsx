@@ -2,7 +2,7 @@ import React, { forwardRef } from 'react'
 import { cn } from '../../lib/utils'
 import { formatDistanceToNow } from "date-fns";
 import { Story, VoteType } from '../../types/story';
-import { ChevronDown, ChevronUp } from 'lucide-react';
+import { ArrowDown, ArrowUp, ChevronDown, ChevronUp } from 'lucide-react';
 import { useStore } from '../../store/global';
 
 interface StoryItemProps {
@@ -17,25 +17,28 @@ const VoteButton = ({ voteType, onChange, isVoted }:
     }) => {
 
     const highlightedTWClass: Record<VoteType, string> = {
-        [VoteType.DOWNVOTE]: 'hover:border-amber-600 hover:text-amber-600 hover:bg-amber-900/30 ',
-        [VoteType.UPVOTE]: 'hover:border-primary hover:text-primary hover:bg-primary/30'
+        [VoteType.DOWNVOTE]: ' hover:text-amber-600 hover:bg-amber-900/30 ',
+        [VoteType.UPVOTE]: ' hover:text-primary hover:bg-primary/30',
+        [VoteType.NEUTRAL]: ' hover:text-muted-foreground hover:bg-muted-foreground/30'
     }
     const selectedTWClass: Record<VoteType, string> = {
         [VoteType.DOWNVOTE]: 'border-amber-600 text-amber-600 bg-amber-900/30',
-        [VoteType.UPVOTE]: 'border-primary text-primary bg-primary/30'
+        [VoteType.UPVOTE]: 'border-primary text-primary bg-primary/30',
+        [VoteType.NEUTRAL]: 'border-muted-foreground text-muted-foreground bg-muted-foreground/30'
     }
 
     const handleVote = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.stopPropagation();
-        onChange(voteType);
+        if (isVoted) onChange(VoteType.NEUTRAL);
+        else onChange(voteType);
     }
     return (
         <button onClick={handleVote} className={cn('flex items-center gap-1 bg-muted/50 transition-colors duration-250 border border-border px-2 py-1 rounded-lg'
             , highlightedTWClass[voteType]
             , isVoted && selectedTWClass[voteType])}>
             {voteType === VoteType.UPVOTE ?
-                <span className='flex items-center gap-1 text-muted-foreground text-xs'>Upvote  <ChevronUp /> </span> :
-                <span className='flex items-center gap-1 text-muted-foreground text-xs'>Downvote <ChevronDown /> </span>
+                <span className='flex items-center gap-1 text-muted-foreground text-xs'>Upvote  <ArrowUp size={16} /> </span> :
+                <span className='flex items-center gap-1 text-muted-foreground text-xs'>Downvote <ArrowDown size={16} /> </span>
             }
         </button>
     )

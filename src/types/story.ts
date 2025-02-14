@@ -24,6 +24,7 @@ export interface SearchHistory {
 export const VoteType = {
   UPVOTE: 'upvote',
   DOWNVOTE: 'downvote',
+  NEUTRAL: 'neutral',
 } as const;
 
 export type VoteType = typeof VoteType[keyof typeof VoteType];
