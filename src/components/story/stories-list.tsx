@@ -78,7 +78,8 @@ export default function StoriesList({ onStoryClick }: StoriesListProps) {
         ))
       ))}
 
-      {hasNextPage && <div className="p-4 text-center text-muted-foreground">Loading more stories...</div>}
+      {hasNextPage && <div className="p-4 text-center text-muted-foreground animate-pulse  bg-muted/10 hover:bg-muted/40
+transition-colors">Loading more stories...</div>}
       {!hasNextPage && <div className="p-4 text-center text-muted-foreground">You reached the end of the list</div>}
     </div>
   );
