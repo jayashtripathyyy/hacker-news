@@ -9,11 +9,11 @@ type SearchPageSizeProps = {
 }
 
 function SearchController({ }: Props) {
-    const { itemsPerPage, setItemsPerPage } = useStore();
+    const { itemsPerPage, setItemsPerPage, totalResults } = useStore();
     return (
         <div className='border-b border-dashed border-border '>
             <div className='container_wrapper p-1 px-6 flex items-center justify-between'>
-                <div className='text-xs  font-semibold text-primary'>5 results</div>
+                {totalResults > 0 ? <div className='text-xs  font-semibold text-primary'>{totalResults} results</div> : <div></div>}
                 <SearchPageSize pageSize={itemsPerPage} setPageSize={setItemsPerPage} />
             </div>
         </div>

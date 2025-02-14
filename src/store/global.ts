@@ -6,10 +6,12 @@ interface GlobalStore {
   itemsPerPage: number;
   searchQuery: string;
   searchHistory: Set<string>;
+  totalResults: number;
   //actions
   setItemsPerPage: (count: number) => void;
   setSearchQuery: (query: string) => void;
   addToSearchHistory: (query: string) => void;
+  setTotalResults: (count: number) => void;
 }
 
 
@@ -54,7 +56,9 @@ const createPersistedSearchHistory = persist<Pick<GlobalStore, 'searchHistory'> 
 export const useStore = create<GlobalStore>()((...args) => ({
   itemsPerPage: 20,
   searchQuery: '',
-  setItemsPerPage: (count) => args[0]({ itemsPerPage: count }),
+  totalResults: 0,
+  setItemsPerPage: (count) => args[0]({ itemsPerPage: count, totalResults: 0 }),
   setSearchQuery: (query) => args[0]({ searchQuery: query }),
+  setTotalResults: (count) => args[0]({ totalResults: count }),
   ...createPersistedSearchHistory(...args),
 }));

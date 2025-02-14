@@ -11,7 +11,7 @@ interface StoriesListProps {
 }
 
 export default function StoriesList({ onStoryClick }: StoriesListProps) {
-  const { itemsPerPage, searchQuery,searchHistory, addToSearchHistory } = useStore();
+  const { itemsPerPage, searchQuery,searchHistory, addToSearchHistory, setTotalResults } = useStore();
   const {
     data,
     fetchNextPage,
@@ -43,13 +43,21 @@ export default function StoriesList({ onStoryClick }: StoriesListProps) {
     [fetchNextPage, hasNextPage]
   );
 
+  const updatetotalResults = useCallback(() => {
+    if (data) {
+      const totalResults = data.pages.reduce((acc, page) => acc + page.hits.length, 0);
+      setTotalResults(totalResults);
+    }
+  }, [data, setTotalResults]);
+
   useEffect(() => {
     //we can uncomment this if we want to add the search query only in a successful search
     // if (data && data?.pages[0].hits.length > 0 && searchQuery) {
       addToSearchHistory(searchQuery);
+      updatetotalResults();
     // }
   },[data])      
-  console.log(searchHistory);
+
   return (
     <div className="flex flex-col flex-1 overflow-auto ">
       {isLoading && Array.from({ length: itemsPerPage }).map((_, index) => (
