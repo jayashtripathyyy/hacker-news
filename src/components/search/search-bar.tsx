@@ -41,9 +41,8 @@ function SearchBar({ }: Props) {
     }
   }
 
-
   useEffect(() => {
-    setSearchQuery(debouncedValue);
+      setSearchQuery(debouncedValue);
   }, [debouncedValue]);
 
 
@@ -56,7 +55,8 @@ function SearchBar({ }: Props) {
             type='text'
             placeholder='Search'
             className='w-full bg-transparent outline-none  '
-            value={inputValue} onChange={(e) => {
+            value={inputValue} 
+            onChange={(e) => {
               setInputValue(e.target.value)
               setIsRecentSearchOpen(true)
             }}

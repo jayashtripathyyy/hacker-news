@@ -49,7 +49,6 @@ const createPersistedStore = persist<Pick<GlobalStore, 'searchHistory' | 'storie
         const serializedValue = {
           ...value,
           state: {
-            ...value.state,
             searchHistory: Array.from(value.state.searchHistory),
             storiesVoteList: value.state.storiesVoteList
           }
