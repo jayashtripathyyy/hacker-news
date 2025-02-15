@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
+import VirtualRow from './virtual-row';
 
 interface VirtualListProps<T> {
   data: T[];
@@ -114,11 +115,11 @@ export const InfiniteVirtualList = <T extends any>({
   useEffect(() => {
     const scrollBuffer = containerHeight * threshold;
     const remainingScroll = totalHeight - (scrollTop + containerHeight);
-        
+
     if (hasMore && !isLoading && remainingScroll <= scrollBuffer) {
-      setIsLoading(true); 
+      setIsLoading(true);
       onLoadMore().finally(() => {
-        setIsLoading(false); 
+        setIsLoading(false);
       });
     }
   }, [scrollTop, containerHeight, totalHeight, onLoadMore, threshold, hasMore, isLoading]);
@@ -146,12 +147,13 @@ export const InfiniteVirtualList = <T extends any>({
           }}
         >
           {visibleData.map((item, index) => (
-            <div
+            <VirtualRow
               key={startIndex + index}
-              style={{ height: rowHeight }}
-            >
-              {renderItem(item, startIndex + index)}
-            </div>
+              item={item}
+              index={startIndex + index}
+              height={rowHeight}
+              renderItem={renderItem as (item: unknown, index: number) => React.ReactNode}
+            />
           ))}
           {hasMore && footer}
         </div>
@@ -159,3 +161,5 @@ export const InfiniteVirtualList = <T extends any>({
     </div>
   );
 };
+
+InfiniteVirtualList.displayName = 'InfiniteVirtualList';

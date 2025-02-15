@@ -5,7 +5,7 @@ import StoryItem from "./story-item";
 import { useStore } from "../../store/global";
 import { fetchStories } from "../../lib/api";
 import { Story } from "../../types/story";
-import VirtualList, { InfiniteVirtualList } from "../virtual-list";
+import VirtualList, { InfiniteVirtualList } from "../virtual-list/virtual-list";
 
 interface StoriesListProps {
   onStoryClick: (story: Story) => void;
