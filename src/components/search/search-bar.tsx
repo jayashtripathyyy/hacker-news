@@ -2,13 +2,14 @@ import React, { useEffect, useMemo, useState } from 'react'
 import { useStore } from '../../store/global';
 import useDebounce from '../../hooks/use-debounce';
 import { History, SearchIcon } from 'lucide-react';
+import Spinner from '../spinner';
 
 type Props = {}
 
 function SearchBar({ }: Props) {
-  const { searchQuery, setSearchQuery, searchHistory } = useStore();
+  const { searchQuery, setSearchQuery, searchHistory, addToSearchHistory, isLoading, setIsLoading } = useStore();
   const [inputValue, setInputValue] = useState(searchQuery);
-  const [debouncedValue, clearDebounce] = useDebounce(inputValue, 800);
+  const [debouncedValue, clearDebounce] = useDebounce(inputValue, 1000);
   const [isRecentSearchOpen, setIsRecentSearchOpen] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(-1);
 
@@ -28,6 +29,7 @@ function SearchBar({ }: Props) {
         clearDebounce();
         setSearchQuery(inputValue);
       }
+      addToSearchHistory(inputValue);
       setIsRecentSearchOpen(false);
       setSelectedIndex(-1);
     } else if (e.key === 'ArrowDown') {
@@ -39,6 +41,13 @@ function SearchBar({ }: Props) {
       e.preventDefault();
       setSelectedIndex(prev => prev > -1 ? prev - 1 : prev);
     }
+
+  }
+
+  const onSearch = () => {
+    clearDebounce();
+    setInputValue(searchQuery);
+    addToSearchHistory(searchQuery);
   }
 
   useEffect(() => {
@@ -49,12 +58,11 @@ function SearchBar({ }: Props) {
   return (
     <div className='border-b border-dashed border-border relative '>
       <div className='container_wrapper p-4'>
-        <div className='container_wrapper rounded-3xl border border-input bg-muted px-4 py-2 flex items-center gap-2 relative '>
-          <SearchIcon className='w-4 h-4' />
+        <div className='container_wrapper rounded-3xl border border-input bg-muted px-2 py-2 flex items-center gap-2 relative '>
           <input
             type='text'
             placeholder='Search'
-            className='w-full bg-transparent outline-none  '
+            className='w-full bg-transparent outline-none pl-4  '
             value={inputValue} 
             onChange={(e) => {
               setInputValue(e.target.value)
@@ -64,6 +72,11 @@ function SearchBar({ }: Props) {
             onFocus={() => setIsRecentSearchOpen(true)}
             onBlur={() => setIsRecentSearchOpen(false)}
           />
+          <button onClick={onSearch} className='p-2 rounded-full hover:bg-muted-foreground/10 transition-colors'
+            disabled={isLoading}
+          >
+            {isLoading ? <Spinner /> : <SearchIcon className='w-4 h-4' />}
+          </button>
           {isRecentSearchOpen && previousSearchHistoryList.length > 0 && (
             <div className='absolute top-12 left-0 w-full bg-secondary/60 backdrop-blur-md rounded-xl shadow-md overflow-hidden '>
               {previousSearchHistoryList.map((query, index) => (

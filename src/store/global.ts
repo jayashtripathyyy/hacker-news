@@ -9,12 +9,14 @@ interface GlobalStore {
   searchHistory: Set<string>;
   totalResults: number;
   storiesVoteList: StoriesVoteList;
+  isLoading: boolean;
   //actions
   setItemsPerPage: (count: number) => void;
   setSearchQuery: (query: string) => void;
   addToSearchHistory: (query: string) => void;
   setTotalResults: (count: number) => void;
   setStoriesVoteList: (voteList: StoriesVoteList) => void;
+  setIsLoading: (isLoading: boolean) => void;
 }
 
 
@@ -64,8 +66,10 @@ export const useStore = create<GlobalStore>()((...args) => ({
   itemsPerPage: 20,
   searchQuery: '',
   totalResults: 0,
+  isLoading: false,
   setItemsPerPage: (count) => args[0]({ itemsPerPage: count, totalResults: 0 }),
   setSearchQuery: (query) => args[0]({ searchQuery: query }),
   setTotalResults: (count) => args[0]({ totalResults: count }),
+  setIsLoading: (isLoading) => args[0]({ isLoading }),
   ...createPersistedStore(...args),
 }));
