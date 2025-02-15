@@ -33,7 +33,7 @@ pnpm install
 pnpm dev
 ```
 
-The application will be available at `https://vercel.com/jayashs-projects-e008b9a7/hacker-news/settings/domains`
+The application will be available at [https://vercel.com/jayashs-projects-e008b9a7/hacker-news/settings/domains](https://hacker-news-six-xi.vercel.app/)
 
 
 
