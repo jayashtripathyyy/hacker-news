@@ -61,9 +61,13 @@ const StoryItem = forwardRef<HTMLDivElement, StoryItemProps>(
                         <ChevronUp />
                         <div className='text-[.5rem] font-bold'>{story.points}</div>
                     </div>
-                    <div className='flex flex-col  flex-1 overflow-hidden'>
-                        <h3 className="text-lg font-semibold line-clamp-2">{story.title}</h3>
-                        {story.url && <a href={story.url} target='_blank' className='text-sm text-muted-foreground'>{story.url}</a>}
+                    <div className='flex flex-col gap-2  flex-1 overflow-hidden'>
+                        <div>
+
+                        <h3 title={story.title} className="text-lg md:text-xl  font-semibold whitespace-nowrap overflow-hidden  text-ellipsis flex-1 ">{story.title}</h3>
+                        </div>
+                        
+                        {story.url && <a href={story.url} target='_blank' className='text-sm text-muted-foreground line-clamp-1 overflow-hidden text-ellipsis '>{story.url}</a>}
                     </div>
                 </div>
 

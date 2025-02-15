@@ -78,7 +78,7 @@ function SearchBar({ }: Props) {
             {isLoading ? <Spinner /> : <SearchIcon className='w-4 h-4' />}
           </button>
           {isRecentSearchOpen && previousSearchHistoryList.length > 0 && (
-            <div className='absolute top-12 left-0 w-full bg-secondary/60 backdrop-blur-md rounded-xl shadow-md overflow-hidden '>
+            <div className='absolute top-14 left-0 w-full bg-secondary/60 backdrop-blur-md rounded-xl shadow-md overflow-hidden z-10'>
               {previousSearchHistoryList.map((query, index) => (
                 <div key={query}
                   className={`p-2 hover:bg-muted-foreground/10 cursor-pointer border-b border-dashed border-border flex items-center gap-2 ${index === selectedIndex ? 'bg-muted-foreground/10' : ''
