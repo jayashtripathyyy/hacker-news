@@ -5,7 +5,7 @@ import StoryItem from "./story-item";
 import { useStore } from "../../store/global";
 import { fetchStories } from "../../lib/api";
 import { Story } from "../../types/story";
-import VirtualList from "../virtual-list";
+import VirtualList, { InfiniteVirtualList } from "../virtual-list";
 
 interface StoriesListProps {
   onStoryClick: (story: Story) => void;
@@ -49,14 +49,23 @@ export default function StoriesList({ onStoryClick }: StoriesListProps) {
         <div className="animate-pulse  bg-muted/10 p-10 md:px-4  hover:bg-muted/40 cursor-pointer transition-colors border-b border-border "></div>
       ))}
 
-      <VirtualList
+      <InfiniteVirtualList
         data={data?.pages.flatMap(page => page.hits) || []}
         rowHeight={150}
-        renderItem={(item, index) => (
+        renderItem={(item) => (
           <StoryItem key={item.objectID} story={item} onClick={() => onStoryClick(item)} />
         )}
+        hasMore={hasNextPage}
+        onLoadMore={async () => {
+          await fetchNextPage();
+          return;
+        }}
+        threshold={0.5}
         footer={hasNextPage && 
-                <div className="p-4 text-center text-muted-foreground animate-pulse  bg-muted/10 hover:bg-muted/40 transition-colors">Loading more stories...</div>}
+          <div className="p-4 text-center text-muted-foreground animate-pulse bg-muted/10 hover:bg-muted/40 transition-colors">
+            Loading more stories...
+          </div>
+        }
       />
 
     </div>
