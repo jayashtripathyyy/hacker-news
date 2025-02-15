@@ -5,6 +5,7 @@ import StoryItem from "./story-item";
 import { useStore } from "../../store/global";
 import { fetchStories } from "../../lib/api";
 import { Story } from "../../types/story";
+import VirtualList from "../virtual-list";
 
 interface StoriesListProps {
   onStoryClick: (story: Story) => void;
@@ -26,23 +27,7 @@ export default function StoriesList({ onStoryClick }: StoriesListProps) {
     getNextPageParam: (lastPage) =>
       lastPage.page < lastPage.nbPages - 1 ? lastPage.page + 1 : undefined,
   });
-
-  const lastStoryRef = useCallback(
-    (node: HTMLElement | null) => {
-      if (!node) return;
-
-      const observer = new IntersectionObserver((entries) => {
-        if (entries[0].isIntersecting && hasNextPage) {
-          fetchNextPage();
-        }
-      });
-
-      observer.observe(node);
-      return () => observer.disconnect();
-    },
-    [fetchNextPage, hasNextPage]
-  );
-
+  
   const updatetotalResults = useCallback(() => {
     if (data) {
       const totalResults = data.pages.reduce((acc, page) => acc + page.hits.length, 0);
@@ -63,22 +48,17 @@ export default function StoriesList({ onStoryClick }: StoriesListProps) {
       {isLoading && Array.from({ length: itemsPerPage }).map((_, index) => (
         <div className="animate-pulse  bg-muted/10 p-10 md:px-4  hover:bg-muted/40 cursor-pointer transition-colors border-b border-border "></div>
       ))}
-      {data?.pages.map((page, pageIndex) => (
-        page.hits.map((story, storyIndex) => (
-          <StoryItem
-            key={story.objectID}
-            ref={pageIndex === data.pages.length - 1 &&
-              storyIndex === page.hits.length - 1 ?
-              lastStoryRef : undefined}
-            story={story}
-            onClick={() => onStoryClick(story)}
-          />
-        ))
-      ))}
 
-      {hasNextPage && <div className="p-4 text-center text-muted-foreground animate-pulse  bg-muted/10 hover:bg-muted/40
-transition-colors">Loading more stories...</div>}
-      {!hasNextPage && <div className="p-4 text-center text-muted-foreground">You reached the end of the list</div>}
+      <VirtualList
+        data={data?.pages.flatMap(page => page.hits) || []}
+        rowHeight={150}
+        renderItem={(item, index) => (
+          <StoryItem key={item.objectID} story={item} onClick={() => onStoryClick(item)} />
+        )}
+        footer={hasNextPage && 
+                <div className="p-4 text-center text-muted-foreground animate-pulse  bg-muted/10 hover:bg-muted/40 transition-colors">Loading more stories...</div>}
+      />
+
     </div>
   );
 }
